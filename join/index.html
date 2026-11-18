@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<!--
+  The page behind the "join this café" QR a shop prints from the register:
+
+      https://hellopleasures.github.io/1805-coffee-shop/join?store=<owner uuid>
+
+  On a phone with the 1805 app installed and Associated Domains working, this page is never
+  seen: the link opens the app directly (see ../apple-app-site-association). It is what
+  everyone else gets — the app not installed, universal links switched off, a QR scanned
+  by a camera that opens links in an in-app browser — and its whole job is to hand over to
+  the app, or to the App Store.
+
+  It lives at join/index.html, not join.html, so that /1805-coffee-shop/join resolves on
+  any static host without relying on extensionless-URL behaviour (see ../README.md).
+
+  Deliberately small:
+    - No shop data is fetched. The page does not know, and does not ask, which café a
+      store id belongs to; the app does that after the hand-over, signed in.
+    - The store id goes into exactly one place: the brew1805:// link this page builds. It is
+      not stored, not logged, not sent anywhere, and the referrer policy below keeps it out
+      of the Referer header on the way to the App Store.
+    - No external scripts, fonts or images. One inline script, no network requests.
+
+  PLACEHOLDER to check before publishing: APP_STORE_URL in the script at the bottom.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="referrer" content="no-referrer" />
+<meta name="robots" content="noindex" />
+<title>1805 · Join a café</title>
+<style>
+  :root{
+    --bg:#0d0f12; --card:#16191f; --card2:#1b1f26; --line:#272c34;
+    --ink:#e8eaf0; --muted:#8b919c; --amber:#e8a13c; --amber-ink:#2a1c06;
+    --danger:#e06b6b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text",Segoe UI,Roboto,sans-serif;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .wrap{width:100%;max-width:460px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;
+    box-shadow:0 12px 40px rgba(0,0,0,.45)}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .dot{width:30px;height:30px;border-radius:9px;background:var(--amber);display:grid;place-items:center;
+    color:var(--amber-ink);flex:none}
+  .dot svg{width:18px;height:18px;display:block}
+  .brand b{font-size:18px}
+  .sub{color:var(--muted);font-size:13px;letter-spacing:.04em;text-transform:uppercase;margin:14px 0 10px}
+  h1{font-size:22px;line-height:1.25;margin:0 0 8px}
+  p{margin:0 0 16px}
+  .btn{display:block;width:100%;text-align:center;text-decoration:none;border-radius:11px;
+    font-size:15px;font-weight:650;padding:13px 16px;margin:0 0 10px}
+  .btn-amber{background:var(--amber);color:var(--amber-ink)}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  .msg{border-radius:11px;padding:11px 13px;font-size:13px;margin:0 0 16px;
+    background:rgba(224,107,107,.12);color:var(--danger);border:1px solid rgba(224,107,107,.3)}
+  .hint{color:var(--muted);font-size:12.5px;margin:14px 0 0;line-height:1.5}
+  .hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <main class="card">
+    <!-- A neutral mark, not a letter: the app is one build for every café on it, so the
+         page carries no shop's initial. Inline SVG — no image request. -->
+    <div class="brand">
+      <div class="dot" aria-hidden="true">
+        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h8v4a4 4 0 0 1-8 0z"/><path d="M12 7h1.2a1.8 1.8 0 0 1 0 3.6H12"/><path d="M5 15h6"/>
+        </svg>
+      </div>
+      <b>1805</b>
+    </div>
+
+    <!-- A good link: ?store= is a single UUID. -->
+    <section id="ready" class="hide">
+      <div class="sub">Join a café</div>
+      <h1>Open this café in the 1805 app</h1>
+      <p>Order ahead, pay from your phone and collect rewards at this café. If the app didn't open by itself, use the button below.</p>
+      <a class="btn btn-amber" id="open">Open in the 1805 app</a>
+      <a class="btn btn-ghost" data-app-store rel="noopener noreferrer">Get the app</a>
+      <p class="hint">Don't have the app yet? Install it, then scan the café's QR code again — or come back to this page and tap “Open in the 1805 app”.</p>
+    </section>
+
+    <!-- Anything else: no ?store=, more than one, or not a UUID. Nothing is guessed. -->
+    <section id="broken" class="hide">
+      <div class="sub">Join a café</div>
+      <h1>This link is incomplete</h1>
+      <div class="msg" role="alert">The link doesn't say which café to join. Scan the QR code at the counter again, or ask the staff for a new one.</div>
+      <a class="btn btn-ghost" data-app-store rel="noopener noreferrer">Get the app</a>
+    </section>
+
+    <noscript>
+      <div class="sub">Join a café</div>
+      <p>This page needs JavaScript to open the café in the 1805 app. Turn it on and reload, or search for “1805” in the App Store and scan the café's QR code from inside the app.</p>
+    </noscript>
+  </main>
+</div>
+
+<script>
+// ---------------------------------------------------------------------------------------
+// PLACEHOLDER — check before publishing. The customer app's App Store listing.
+// 6791081952 is the 1805 customer app's Apple ID; replace the whole URL if the listing
+// moves (a different storefront, a campaign link).
+// ---------------------------------------------------------------------------------------
+const APP_STORE_URL = "https://apps.apple.com/app/id6791081952";
+
+// The app's own scheme, as the app parses it (SourcesCustomer/Shop/JoinLink.swift).
+const APP_LINK = "brew1805://join?store=";
+
+// A UUID and nothing else. The app refuses anything looser, so this page does not build a
+// link the app would refuse — and never puts unvalidated text from the address bar into
+// a link at all.
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Exactly one `store`, and it must be a UUID. Two of them is a link built by hand, and
+// picking either would be a guess — the same rule the app applies.
+function storeFromLocation() {
+  const all = new URLSearchParams(location.search).getAll("store");
+  if (all.length !== 1) return null;
+  const store = all[0].trim().toLowerCase();
+  return UUID.test(store) ? store : null;
+}
+
+for (const link of document.querySelectorAll("[data-app-store]")) link.href = APP_STORE_URL;
+
+const store = storeFromLocation();
+if (store === null) {
+  document.getElementById("broken").classList.remove("hide");
+} else {
+  // The one place the store id goes.
+  const appLink = APP_LINK + store;
+  document.getElementById("open").href = appLink;
+  document.getElementById("ready").classList.remove("hide");
+
+  // Try the app once, by itself. "Once" is remembered in this history entry's state —
+  // which holds a flag and no id — so a reload, or coming back from the App Store, does
+  // not throw the visitor at the app again; the button is there for that. Where the state
+  // cannot be written, the attempt is skipped rather than risk a loop.
+  let firstVisit = false;
+  try {
+    firstVisit = !(history.state && history.state.tried);
+    history.replaceState({ tried: true }, "");
+  } catch (_e) {
+    firstVisit = false;
+  }
+  if (firstVisit) {
+    // After the page has painted, so the fallback is already on screen if the app is not
+    // installed and the browser has nothing to open.
+    window.addEventListener("load", () => setTimeout(() => { location.href = appLink; }, 300));
+  }
+}
+</script>
+</body>
+</html>

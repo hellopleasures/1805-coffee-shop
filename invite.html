@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>1805 POS · View access</title>
+<style>
+  :root{
+    --bg:#0d0f12; --card:#16191f; --card2:#1b1f26; --line:#272c34;
+    --ink:#e8eaf0; --muted:#8b919c; --amber:#e8a13c; --amber-ink:#2a1c06;
+    --danger:#e06b6b; --ok:#5cc98c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text",Segoe UI,Roboto,sans-serif;
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .wrap{width:100%;max-width:460px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;
+    box-shadow:0 12px 40px rgba(0,0,0,.45)}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .dot{width:30px;height:30px;border-radius:9px;background:var(--amber);display:grid;place-items:center;
+    color:var(--amber-ink)}
+  .dot svg{width:18px;height:18px;display:block}
+  h1{font-size:18px;margin:0}
+  .sub{color:var(--muted);font-size:13px;letter-spacing:.04em;text-transform:uppercase;margin:14px 0 18px}
+  label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+  input{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:11px;
+    color:var(--ink);padding:12px 13px;font-size:15px;outline:none}
+  input:focus{border-color:var(--amber)}
+  .field{margin-bottom:14px}
+  button{cursor:pointer;border:none;border-radius:11px;font-size:15px;font-weight:650;padding:12px 16px}
+  .btn-amber{background:var(--amber);color:var(--amber-ink);width:100%}
+  .btn-amber:disabled{opacity:.5;cursor:default}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+  .btn-link{background:none;color:var(--danger);padding:6px 10px;font-size:13px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .who{display:flex;align-items:center;gap:11px}
+  .avatar{width:38px;height:38px;border-radius:50%;background:var(--amber);color:var(--amber-ink);
+    display:grid;place-items:center;font-weight:800}
+  .who b{display:block;font-size:14px}
+  .who span{color:var(--muted);font-size:12px}
+  .viewers{margin:6px 0 18px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .viewers .v{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;
+    border-top:1px solid var(--line)}
+  .viewers .v:first-child{border-top:none}
+  .viewers .v small{color:var(--muted)}
+  .viewers .v .acts{display:flex;gap:2px;flex:none}
+  .viewers .v > div:first-child{min-width:0;overflow-wrap:anywhere}
+  .tag{display:inline-block;font-size:11px;letter-spacing:.04em;text-transform:uppercase;
+    border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-left:6px;color:var(--muted)}
+  .tag.wait{color:var(--amber);border-color:rgba(232,161,60,.4)}
+  .btn-link.go{color:var(--ok)}
+  .empty{color:var(--muted);font-size:13px;padding:14px 13px}
+  .msg{border-radius:11px;padding:11px 13px;font-size:13px;margin:6px 0 0;display:none}
+  .msg.show{display:block}
+  .msg.ok{background:rgba(92,201,140,.12);color:var(--ok);border:1px solid rgba(92,201,140,.3)}
+  .msg.err{background:rgba(224,107,107,.12);color:var(--danger);border:1px solid rgba(224,107,107,.3)}
+  .hint{color:var(--muted);font-size:12.5px;margin-top:16px;line-height:1.5}
+  hr{border:none;border-top:1px solid var(--line);margin:18px 0}
+  .hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <!-- A neutral mark, not a letter: the product is "1805 POS" and the page is used by
+         every shop on it, so it carries no shop's initial. Inline SVG — no image request. -->
+    <div class="brand">
+      <div class="dot" aria-hidden="true">
+        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <rect x="3" y="3" width="12" height="12" rx="3"/><path d="M6.5 9h5"/>
+        </svg>
+      </div>
+      <h1>1805 POS</h1>
+    </div>
+
+    <!-- SIGN IN -->
+    <section id="signin" class="hide">
+      <div class="sub">Sign in</div>
+      <div class="field"><label for="si-email">Email</label><input id="si-email" type="email" autocomplete="username" placeholder="you@store.com"></div>
+      <div class="field"><label for="si-pass">Password</label><input id="si-pass" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+      <button class="btn-amber" id="si-btn">Sign in</button>
+      <div class="msg err" id="si-msg"></div>
+      <p class="hint">Store owners: manage who can view your sales, inventory and reports. Invited viewers: accept or decline an invitation, or leave a store you no longer want to see.</p>
+    </section>
+
+    <!-- SET PASSWORD (invited viewer landing) -->
+    <section id="setpw" class="hide">
+      <div class="sub">Welcome — set your password</div>
+      <div class="field"><label for="pw-new">New password</label><input id="pw-new" type="password" autocomplete="new-password" placeholder="Choose a password"></div>
+      <button class="btn-amber" id="pw-btn">Save password</button>
+      <div class="msg err" id="pw-msg"></div>
+      <p class="hint">A store has invited you as a read-only viewer. Set a password first; you will then be shown the invitation, and nothing is shared with you until you accept it.</p>
+    </section>
+
+    <!-- CONSOLE -->
+    <section id="console" class="hide">
+      <div class="row" style="margin-bottom:18px">
+        <div class="who">
+          <div class="avatar" id="me-init">·</div>
+          <div><b id="me-email">…</b><span id="me-role">Signed in</span></div>
+        </div>
+        <button class="btn-ghost" id="signout">Sign out</button>
+      </div>
+
+      <!-- FOR THE PERSON SIGNED IN: invitations waiting on them, and stores they can view -->
+      <div id="mine">
+        <div class="sub" style="margin-top:0">Invitations for you</div>
+        <div class="viewers" id="my-invites"><div class="empty">Loading…</div></div>
+
+        <div class="sub">Stores you can view</div>
+        <div class="viewers" id="my-stores"><div class="empty">Loading…</div></div>
+        <div class="msg" id="mine-msg"></div>
+      </div>
+
+      <!-- FOR A STORE OWNER: shown only when this account owns a store -->
+      <div id="owner" class="hide">
+        <hr>
+        <div class="sub" style="margin-top:0">People with view access</div>
+        <div class="viewers" id="viewers"><div class="empty">Loading…</div></div>
+
+        <div class="sub">Invited — waiting for them to accept</div>
+        <div class="viewers" id="pending"><div class="empty">Loading…</div></div>
+
+        <div class="sub">Invite a viewer</div>
+        <div class="field"><label for="inv-email">Email</label><input id="inv-email" type="email" placeholder="investor@email.com"></div>
+        <button class="btn-amber" id="inv-btn">Send invite</button>
+        <div class="msg" id="inv-msg"></div>
+        <p class="hint">An invitation is an offer: they can see nothing until they sign in here and accept it. Once they do, they get a <b>read-only</b> dashboard — they can see everything but change nothing — and you can revoke it at any time.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script type="module">
+// Pinned to an exact version: this page takes the OWNER's password, and a floating
+// `@2` would run whatever the CDN serves that day.
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+
+const SUPABASE_URL = "https://earpslukjcchsyrelvsx.supabase.co";
+const SUPABASE_KEY = "sb_publishable_uUh1_brNZ-18wbb9YoJrSw_iOvZNVeB";
+const FN = `${SUPABASE_URL}/functions/v1/invite-viewer`;
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = (id) => document.getElementById(id);
+const show = (id) => { for (const s of ["signin","setpw","console"]) $(s).classList.toggle("hide", s !== id); };
+const flash = (el, text, ok) => { el.textContent = text; el.className = "msg show " + (ok ? "ok" : "err"); };
+const clearMsg = (el) => { el.className = "msg"; };
+// Everything interpolated into innerHTML goes through this — emails and error text
+// come from the server, and neither is ours to trust as markup.
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g,
+  c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+// Is this an invite / recovery landing? (token arrives in the URL hash)
+const hashType = new URLSearchParams(location.hash.slice(1)).get("type");
+const isInviteLanding = hashType === "invite" || hashType === "recovery";
+
+// The function answers with bare codes; these are the ones a person can act on.
+// cannot_invite_this_address deliberately says no more than the server does: the server
+// gives one answer for every kind of account it will not invite, and this page must not
+// guess at which.
+const FRIENDLY = {
+  not_a_store_owner: "This account doesn't own a store, so it can't manage viewers.",
+  too_many_invites: "Too many invites in the last hour. Try again later.",
+  cannot_invite_this_address: "That address can't be given view access. Ask them for a different email.",
+  cannot_invite_self: "That's your own address.",
+  invalid_email: "That doesn't look like an email address.",
+  invite_failed: "The invite couldn't be sent. Check the address and try again.",
+  unidentified_client: "The request couldn't be verified. Try again from another connection.",
+  // The invitee's side (accept_store_invite / decline_store_invite / leave_store).
+  invite_not_found: "That invitation is no longer available.",
+  shop_unavailable: "That store isn't available right now.",
+};
+const friendly = (code, fallback) => FRIENDLY[code] || code || fallback;
+
+async function callFn(action, payload = {}) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error("Not signed in");
+  const res = await fetch(FN, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_KEY,
+      "Authorization": `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify({ action, ...payload }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || json.error) {
+    const err = new Error(friendly(json.error, `Request failed (${res.status})`));
+    err.code = json.error;
+    throw err;
+  }
+  return json;
+}
+
+// A database function called as the signed-in person (never the service role): the
+// server decides from their own session which invitations and stores are theirs.
+async function callRpc(name, args) {
+  const { data, error } = await supabase.rpc(name, args);
+  if (error) throw new Error(friendly(error.message, "Something went wrong. Try again."));
+  return data;
+}
+
+const day = (iso) => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString();
+};
+
+// One row of a list. Every value that came from the server goes through esc(); the
+// button's data-* attributes too, since they are written into markup.
+const rowHTML = (title, note, buttons) => `
+  <div class="v">
+    <div><div>${title}</div><small>${esc(note)}</small></div>
+    <div class="acts">${buttons.map(b =>
+      `<button class="btn-link ${b.go ? "go" : ""}" data-act="${esc(b.act)}" data-id="${esc(b.id)}">${esc(b.label)}</button>`
+    ).join("")}</div>
+  </div>`;
+
+// Wire every button in `box` to `handlers[act](id)`, then re-render through `after`.
+function wire(box, handlers, msgEl, after) {
+  box.querySelectorAll("[data-act]").forEach(b =>
+    b.addEventListener("click", async () => {
+      clearMsg(msgEl);
+      b.disabled = true;
+      try {
+        // A handler that answers false was called off by the person (a declined confirm).
+        if (await handlers[b.dataset.act](b.dataset.id) === false) { b.disabled = false; return; }
+        await after();
+      } catch (e) { flash(msgEl, e.message, false); b.disabled = false; }
+    }));
+}
+
+// ---------------------------------------------------------------------------
+// The signed-in person's own side: invitations to answer, stores to leave.
+// ---------------------------------------------------------------------------
+async function renderMine(user) {
+  const invitesBox = $("my-invites"), storesBox = $("my-stores");
+  const again = () => renderMine(user);
+
+  // Invitations waiting on this person. Rows the server marks as anything other than
+  // pending (if it returns a status at all) are not offers any more.
+  try {
+    const invites = (await callRpc("my_store_invites") ?? [])
+      .filter(i => i && i.owner_id && (i.status == null || i.status === "pending"));
+    invitesBox.innerHTML = invites.length
+      ? invites.map(i => rowHTML(
+          esc(i.store_name || "A store"),
+          i.created_at ? `invited ${day(i.created_at)}` : "wants to share its dashboard with you",
+          [{ act: "accept", id: i.owner_id, label: "Accept", go: true },
+           { act: "decline", id: i.owner_id, label: "Decline" }])).join("")
+      : `<div class="empty">No invitations waiting.</div>`;
+    wire(invitesBox, {
+      accept: (owner) => callRpc("accept_store_invite", { p_owner: owner }),
+      decline: (owner) => callRpc("decline_store_invite", { p_owner: owner }),
+    }, $("mine-msg"), again);
+  } catch (e) { invitesBox.innerHTML = `<div class="empty">Couldn't load invitations: ${esc(e.message)}</div>`; }
+
+  // Stores this person can already view. Membership rows are readable by their own
+  // member; the store's name comes from its settings, which a viewer may read. Several
+  // settings rows can exist per store — the newest is the live one.
+  try {
+    const { data: memberships, error } = await supabase.from("store_members")
+      .select("owner_id, created_at").eq("member_id", user.id);
+    if (error) throw new Error("Something went wrong. Try again.");
+    const owners = (memberships ?? []).map(m => m.owner_id);
+    const names = {};
+    if (owners.length) {
+      const { data: settings } = await supabase.from("app_settings")
+        .select("owner_id, store_name, updated_at, id").in("owner_id", owners)
+        .order("updated_at", { ascending: false }).order("id", { ascending: false });
+      for (const row of settings ?? []) if (!(row.owner_id in names)) names[row.owner_id] = row.store_name;
+    }
+    storesBox.innerHTML = owners.length
+      ? memberships.map(m => rowHTML(
+          esc(names[m.owner_id] || "A store"),
+          m.created_at ? `viewing since ${day(m.created_at)}` : "read-only access",
+          [{ act: "leave", id: m.owner_id, label: "Leave" }])).join("")
+      : `<div class="empty">You don't have view access to any store.</div>`;
+    wire(storesBox, {
+      leave: async (owner) => {
+        if (!confirm("Leave this store? You will lose view access until its owner invites you again.")) {
+          return false;
+        }
+        await callRpc("leave_store", { p_owner: owner });
+      },
+    }, $("mine-msg"), again);
+  } catch (e) { storesBox.innerHTML = `<div class="empty">Couldn't load your stores: ${esc(e.message)}</div>`; }
+}
+
+// ---------------------------------------------------------------------------
+// The owner's side: who can view, who has been invited and not answered yet.
+// ---------------------------------------------------------------------------
+async function renderViewers() {
+  const box = $("viewers"), pendingBox = $("pending");
+  let listed;
+  try { listed = await callFn("list"); }
+  catch (e) {
+    // Not an owner: the owner half of the page simply isn't theirs to see.
+    if (e.code === "not_a_store_owner") { $("owner").classList.add("hide"); return; }
+    $("owner").classList.remove("hide");
+    box.innerHTML = `<div class="empty">Couldn't load viewers: ${esc(e.message)}</div>`;
+    pendingBox.innerHTML = `<div class="empty">—</div>`;
+    return;
+  }
+  $("owner").classList.remove("hide");
+  $("me-role").textContent = "Your store";
+
+  const viewers = listed.viewers ?? [], pending = listed.pending ?? [];
+  box.innerHTML = viewers.length
+    ? viewers.map(v => rowHTML(
+        `${esc(v.email)}<span class="tag">Accepted</span>`,
+        v.created_at ? `since ${day(v.created_at)}` : "can view your store",
+        [{ act: "revoke", id: v.member_id, label: "Revoke" }])).join("")
+    : `<div class="empty">Nobody has view access yet.</div>`;
+  pendingBox.innerHTML = pending.length
+    ? pending.map(v => rowHTML(
+        `${esc(v.email || "Invited account")}<span class="tag wait">Pending</span>`,
+        v.created_at ? `invited ${day(v.created_at)} — cannot see anything yet` : "cannot see anything yet",
+        [{ act: "revoke", id: v.member_id, label: "Cancel invite" }])).join("")
+    : `<div class="empty">No invitations waiting on anyone.</div>`;
+
+  // Revoke works on both: it removes access that was accepted and withdraws an offer
+  // that was not.
+  const handlers = { revoke: (id) => callFn("revoke", { member_id: id }) };
+  wire(box, handlers, $("inv-msg"), renderViewers);
+  wire(pendingBox, handlers, $("inv-msg"), renderViewers);
+}
+
+async function enterConsole(user) {
+  $("me-email").textContent = user.email;
+  $("me-init").textContent = (user.email[0] || "·").toUpperCase();
+  $("me-role").textContent = "Signed in";
+  $("owner").classList.add("hide");
+  clearMsg($("mine-msg")); clearMsg($("inv-msg"));
+  show("console");
+  renderMine(user);
+  renderViewers();
+}
+
+// --- wiring ---
+$("si-btn").addEventListener("click", async () => {
+  clearMsg($("si-msg"));
+  const email = $("si-email").value.trim(), password = $("si-pass").value;
+  $("si-btn").disabled = true;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  $("si-btn").disabled = false;
+  if (error) return flash($("si-msg"), error.message, false);
+  $("si-pass").value = "";
+  enterConsole(data.user);
+});
+
+$("pw-btn").addEventListener("click", async () => {
+  clearMsg($("pw-msg"));
+  const password = $("pw-new").value;
+  if (password.length < 10) return flash($("pw-msg"), "Use at least 10 characters.", false);
+  $("pw-btn").disabled = true;
+  const { data, error } = await supabase.auth.updateUser({ password });
+  $("pw-btn").disabled = false;
+  if (error) return flash($("pw-msg"), error.message, false);
+  $("pw-new").value = "";
+  // The invite link's one-time token is still in the address bar; drop it so a reload
+  // (or a shared screenshot of the URL) does not carry it.
+  history.replaceState(null, "", location.pathname + location.search);
+  // Straight to the invitation: setting a password is not the same as accepting it.
+  if (data?.user) enterConsole(data.user); else show("signin");
+});
+
+$("inv-btn").addEventListener("click", async () => {
+  clearMsg($("inv-msg"));
+  const email = $("inv-email").value.trim();
+  $("inv-btn").disabled = true;
+  try {
+    await callFn("invite", { email, redirect_to: location.href.split("#")[0] });
+    // One sentence for every success: the server does not say whether the address was
+    // new, and neither does this.
+    flash($("inv-msg"), "Invited ✓ They get view access once they sign in here and accept.", true);
+    $("inv-email").value = "";
+    renderViewers();
+  } catch (e) { flash($("inv-msg"), e.message, false); }
+  $("inv-btn").disabled = false;
+});
+
+$("signout").addEventListener("click", async () => { await supabase.auth.signOut(); show("signin"); });
+
+// --- boot ---
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (isInviteLanding) { show("setpw"); return; }
+  if (session) enterConsole(session.user); else show("signin");
+})();
+</script>
+</body>
+</html>
