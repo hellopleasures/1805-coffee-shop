@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<!--
+  Published 2026-11-18 with INTERIM values (operator name, address, fees, notice period,
+  liability cap, venue, backup retention) chosen so the register's links resolve. Not yet
+  reviewed by counsel: have a lawyer confirm each before the App Store submission.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>1805 POS · Privacy Policy</title>
+<style>
+  :root{
+    --bg:#0d0f12; --card:#16191f; --card2:#1b1f26; --line:#272c34;
+    --ink:#e8eaf0; --muted:#8b919c; --amber:#e8a13c; --amber-ink:#2a1c06;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text",Segoe UI,Roboto,sans-serif;
+    min-height:100vh;padding:24px 16px 48px}
+  .wrap{width:100%;max-width:720px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 24px;
+    box-shadow:0 12px 40px rgba(0,0,0,.45)}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+  .dot{width:30px;height:30px;border-radius:9px;background:var(--amber);display:grid;place-items:center;
+    color:var(--amber-ink);flex:none}
+  .dot svg{width:18px;height:18px;display:block}
+  .brand b{font-size:18px}
+  h1{font-size:24px;line-height:1.25;margin:0 0 6px}
+  .meta{color:var(--muted);font-size:13px;margin:0 0 22px}
+  h2{font-size:13px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;
+    margin:30px 0 10px;padding-top:20px;border-top:1px solid var(--line);font-weight:600}
+  h3{font-size:15px;margin:18px 0 6px}
+  p{margin:0 0 12px}
+  ul,ol{margin:0 0 12px;padding-left:20px}
+  li{margin:0 0 6px}
+  a{color:var(--amber)}
+  .note{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin:0 0 14px}
+  .tbl{overflow-x:auto;margin:0 0 14px;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;min-width:520px;font-size:14px}
+  th,td{text-align:left;vertical-align:top;padding:10px 13px;border-top:1px solid var(--line)}
+  tr:first-child th{border-top:none;color:var(--muted);font-weight:600;font-size:12.5px;
+    letter-spacing:.04em;text-transform:uppercase}
+  .path{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:2px 8px;white-space:nowrap}
+  nav{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);
+    display:flex;gap:16px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="brand">
+      <div class="dot" aria-hidden="true">
+        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <rect x="3" y="3" width="12" height="12" rx="3"/><path d="M6.5 9h5"/>
+        </svg>
+      </div>
+      <b>1805 POS</b>
+    </div>
+    <h1>Privacy Policy</h1>
+    <p class="meta">1805 POS — the register app for coffee shops · Effective November 18, 2026</p>
+
+    <p>This policy explains what information the 1805 POS register app ("the app") and the service behind it handle, why, and what you can do about it. The service is operated by 1805 Coffee Shop, Laur, Nueva Ecija, Philippines ("we", "us", "the platform").</p>
+
+    <div class="note">
+      <p><b>Two kinds of people, two roles.</b></p>
+      <p style="margin:0">If you are a <b>shop owner or staff member</b> using the app, we decide how your account information is handled and this policy speaks to you directly. If you are a <b>customer of a shop</b> that uses the app, that <b>shop</b> decides what is collected about you and why — it is the personal information controller of its own customers' data — and we handle that data only on the shop's behalf and instructions, as its processor.</p>
+    </div>
+
+    <h2>1. Information we handle about a shop</h2>
+    <div class="tbl"><table>
+      <tr><th>What</th><th>Details</th><th>Why</th></tr>
+      <tr><td>Store account</td><td>The owner's email address and password (the password is kept only as a hash by the sign-in service and is never readable by us or by the shop), the owner's name, the store's name and address, and store settings such as opening hours and time zone.</td><td>To create and secure the account and run the register.</td></tr>
+      <tr><td>Staff roster</td><td>Each staff member's name and role, and their PIN stored only as a salted hash — the PIN itself is never stored and cannot be shown back to anyone.</td><td>So staff can sign in at the counter and sales can be attributed.</td></tr>
+      <tr><td>Business records</td><td>Menu and prices, inventory, orders and sales, payments and refunds recorded against them, expenses, shifts, and an audit trail of sensitive actions (voids, refunds, discounts).</td><td>These are the shop's own books; keeping them is what the app is for.</td></tr>
+      <tr><td>Payment connection</td><td>If a shop connects its own PayMongo account for QR Ph payments: the PayMongo secret key and webhook secret the shop enters. They are stored on the server where no app, staff member or viewer can read them back; the app only ever shows whether an account is connected. A replaced or disconnected account's secrets are erased 30 days after it is retired.</td><td>To create QR Ph payment codes on the shop's own merchant account and confirm when they are paid.</td></tr>
+      <tr><td>Device information</td><td>A push notification token for each device that turns notifications on, and an identifier for the device's queue of unsent sales.</td><td>To alert the register to a new online order or a closed shift, and to apply offline sales exactly once.</td></tr>
+      <tr><td>People given view access</td><td>The email address of anyone the owner invites as a read-only viewer (for example an accountant or a partner), and whether they accepted.</td><td>To let the owner share, and withdraw, read-only access.</td></tr>
+    </table></div>
+    <p>The app uses the device camera only to scan a customer's member QR code at the counter; images are not saved or uploaded. The app keeps a copy of the shop's menu, staff, settings and customers on the device so it can keep selling without a connection, and a queue of sales made offline until they reach the server.</p>
+    <p>We do not use advertising or analytics trackers in the app, we do not track you across other companies' apps or websites, and we do not sell personal information.</p>
+
+    <h2>2. Information a shop handles about its customers</h2>
+    <p>A shop that uses the app, and the companion customer app, may record the following about its own customers. <b>The shop is the controller of this data.</b> We store and process it for the shop, under the shop's instructions and our agreement with it, and do not use it for our own purposes.</p>
+    <ul>
+      <li>Name, mobile number and email address, and a profile photo if the customer adds one.</li>
+      <li>Purchase history at that shop: orders, what was bought, how it was paid, pickup times and any notes the customer typed.</li>
+      <li>Loyalty points, rewards, referral and game activity at that shop.</li>
+      <li>Wallet (store credit) balance and its history of top-ups, spending and refunds at that shop, and gifts sent or received.</li>
+      <li>Push notification tokens for the customer's own devices, used to tell them about their orders.</li>
+    </ul>
+    <p>Each shop's records are kept separate from every other shop's. A customer who uses more than one shop has a separate record, balance and history at each, and one shop cannot see another's.</p>
+    <p>If you are a customer and want to see, correct or delete what a shop holds about you, ask that shop — or use the account-deletion option in the customer app. We will help the shop respond, and will act on a request passed to us by the shop.</p>
+
+    <h2>3. Why we process information, and on what basis</h2>
+    <ul>
+      <li><b>To provide the service to a shop</b> — performing our agreement with the shop: accounts, the register, reports, online orders, payments.</li>
+      <li><b>To keep the service secure and working</b> — our legitimate interests: preventing abuse, limiting repeated sign-in or invitation attempts, diagnosing faults.</li>
+      <li><b>To meet legal obligations</b> that apply to us.</li>
+      <li><b>For a shop's customers</b> — on the shop's behalf and for the purposes the shop has told its customers about.</li>
+    </ul>
+
+    <h2>4. Who else handles the information</h2>
+    <p>We use these service providers. Each handles only what its job requires.</p>
+    <div class="tbl"><table>
+      <tr><th>Provider</th><th>What it does</th><th>What it handles</th></tr>
+      <tr><td>Supabase</td><td>Hosts the database, sign-in service, file storage and server functions. The project is hosted in Singapore (AWS ap-southeast-1).</td><td>Everything described in sections 1 and 2.</td></tr>
+      <tr><td>PayMongo</td><td>Processes QR Ph payments.</td><td>The amount, a short description naming the shop and the purpose, and a reference. Payers pay from their own bank or e-wallet app; we never receive their bank or e-wallet credentials. Where a shop has connected its own PayMongo account, that shop is PayMongo's merchant for those payments.</td></tr>
+      <tr><td>Apple (Apple Push Notification service)</td><td>Delivers notifications to iPhone and iPad.</td><td>The device token and the notification text (for example a shop's name and an order number).</td></tr>
+      <tr><td>Google (Firebase Cloud Messaging)</td><td>Delivers notifications to Android devices, only where a shop's customer has registered one.</td><td>The device token and the notification text.</td></tr>
+    </table></div>
+    <p>Because the hosting provider and the notification services operate outside the Philippines, information is transferred to and stored in other countries, including Singapore. We remain responsible for information we send to our providers.</p>
+    <p>We disclose information to others only when the law requires it, or to the people a shop owner has chosen to share with (invited viewers see the shop's sales, inventory and reports read-only, and never see staff PIN hashes or payment secrets).</p>
+
+    <h2>5. How information is protected</h2>
+    <ul>
+      <li>Data travels over encrypted connections (TLS).</li>
+      <li>Each shop's data is separated in the database by rules enforced on the server, so one shop's sign-in cannot read another shop's records.</li>
+      <li>Passwords and staff PINs are stored only as hashes. Payment secrets are held where no client application can read them.</li>
+      <li>Sensitive actions — changing payment credentials, deleting the store account — require the owner's password to have been entered recently.</li>
+    </ul>
+    <p>No system is perfectly secure. If a personal data breach occurs that is likely to cause serious harm, we will notify the National Privacy Commission and the people affected as the law requires, and will notify an affected shop without undue delay so it can meet its own obligations.</p>
+
+    <h2>6. How long information is kept</h2>
+    <ul>
+      <li><b>A shop's account and records</b> are kept for as long as the store account exists.</li>
+      <li><b>A customer who deletes their account</b> in the customer app has their sign-in removed and their record at each shop anonymised: name, phone, email and photo are cleared and loyalty points and wallet balance are forfeited. The orders themselves remain with the shop as business records of sales that took place, no longer linked to a person's contact details.</li>
+      <li><b>Notification tokens</b> are removed when the device stops accepting them, when their lease expires, or when the account is deleted.</li>
+      <li><b>Backups</b> made by our hosting provider may retain deleted data for up to 30 days before it is overwritten.</li>
+    </ul>
+
+    <h2>7. Deleting a store account</h2>
+    <p>The owner can delete the store account in the app at <span class="path">Settings → Account → Delete store account</span>. This permanently removes the shop from the service: its menu, staff roster, settings, sales and expense records, the records it holds about its customers, its connected payment credentials, and the owner's sign-in. It cannot be undone.</p>
+    <p>Deletion is refused while the shop's customers still hold wallet balances or unredeemed gifts there, or while a payment is still being processed — that money belongs to customers and must be settled first. Shops are responsible for keeping any records the law requires them to keep (for example for tax purposes) and should export what they need before deleting.</p>
+
+    <h2>8. Your rights under the Data Privacy Act of 2012</h2>
+    <p>Under Republic Act No. 10173 and its implementing rules, you have the right to:</p>
+    <ul>
+      <li><b>be informed</b> that your personal data is being processed, and how;</li>
+      <li><b>access</b> the personal data held about you;</li>
+      <li><b>object</b> to processing, including for direct marketing;</li>
+      <li><b>rectify</b> data that is inaccurate or incomplete;</li>
+      <li><b>erasure or blocking</b> of data that is no longer necessary, was unlawfully obtained, or that you withdraw consent for;</li>
+      <li><b>data portability</b> — to obtain a copy in a commonly used electronic format;</li>
+      <li><b>damages</b> where you are harmed by inaccurate, unlawfully obtained or misused data; and</li>
+      <li><b>lodge a complaint</b> with the National Privacy Commission (privacy.gov.ph).</li>
+    </ul>
+    <h3>How to exercise them</h3>
+    <ul>
+      <li><b>Shop owners and staff:</b> much of your information can be seen and corrected in the app (store details, staff roster). For anything else, write to patrick@demirix.com. We will answer within a reasonable time and may need to confirm that you are the account holder first.</li>
+      <li><b>Customers of a shop:</b> contact the shop, which controls your data, or use the customer app. If you write to us, we will pass your request to the shop concerned and help it respond.</li>
+    </ul>
+
+    <h2>9. Receipts are not official receipts</h2>
+    <p>Receipts and reports produced by the app are records for the shop and its customer. They are <b>not</b> Bureau of Internal Revenue (BIR) official receipts or invoices, and the app is not a BIR-accredited sales system. Each shop is responsible for issuing official receipts or invoices in the way its registration requires.</p>
+
+    <h2>10. Children</h2>
+    <p>The app is a business tool for shop owners and their staff and is not directed to children.</p>
+
+    <h2>11. Changes to this policy</h2>
+    <p>We will post any change on this page and update the effective date. If a change materially affects how we handle personal data, we will tell store account holders by email or in the app before it takes effect.</p>
+
+    <h2>12. Contact</h2>
+    <p>1805 Coffee Shop<br>Laur, Nueva Ecija, Philippines<br>Data protection contact: the 1805 POS privacy contact<br>Email: patrick@demirix.com</p>
+    <nav>
+      <a href="pos-privacy.html">Privacy Policy</a>
+      <a href="pos-terms.html">Terms of Use</a>
+      <a href="pos-support.html">Support</a>
+    </nav>
+  </div>
+</div>
+</body>
+</html>
